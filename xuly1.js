@@ -1,5 +1,6 @@
 let isRunning = false;
 let interval;
+let lastPlayed = ""; // Biến để lưu trạng thái thông báo
 
 function addHistory(message) {
     const historyDiv = document.getElementById('history');
@@ -9,8 +10,8 @@ function addHistory(message) {
 }
 
 function playTest(type) {
-    if (type === '8h') { document.getElementById('sound8h').play(); addHistory("Đã thử: Ca 8h (Nghỉ ngắn)"); }
-    else if (type === '10h') { document.getElementById('sound10h').play(); addHistory("Đã thử: Ca 10h (Nghỉ ngắn)"); }
+    if (type === '8h') { document.getElementById('sound8h').play(); addHistory("Đã thử: Ca 8h"); }
+    else if (type === '10h') { document.getElementById('sound10h').play(); addHistory("Đã thử: Ca 10h"); }
     else if (type === 'an') { document.getElementById('soundAn').play(); addHistory("Đã thử: Giờ Ăn"); }
 }
 
@@ -39,14 +40,16 @@ function checkTime() {
     const h = now.getHours();
     const m = now.getMinutes();
     const s = now.getSeconds();
+    const timeKey = h + ":" + m; // Khóa theo giờ:phút
 
-    if (m === 0 && s === 0) {
-        // Thông báo giờ ăn lúc 13h
+    // Kiểm tra vào phút 00 của các giờ
+    if (m === 0 && s === 0 && lastPlayed !== timeKey) {
+        lastPlayed = timeKey; // Đánh dấu đã báo giờ này
+
         if (h === 13) {
             document.getElementById('soundAn').play();
             addHistory("Thông báo: Đã đến giờ ăn trưa!");
         } 
-        // Nhắc nghỉ ngắn 5p mỗi 2 giờ, loại trừ khung 13h và 14h
         else if (h % 2 === 0 && h !== 14) {
             if (h >= 8 && h < 17) {
                 document.getElementById('sound8h').play();
